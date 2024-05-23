@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block start %}
+
+
+<style>
+    .container {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .table thead {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .page-link {
+        color: #007bff;
+    }
+
+    .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .page-item.disabled .page-link {
+        color: #6c757d;
+    }
+    .search-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .search-form input {
+        flex: 1;
+        margin-right: 10px;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    .search-form button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        background-color: #4a90e2;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .search-form button:hover {
+        background-color: #357ab8;
+    }
+</style>
+
+
+<header class="py-3 mb-4 border-bottom">
+    <div class="container d-flex flex-wrap justify-content-center align-items-center" style="text-align: center;">
+        <a class="d-flex align-items-center mb-3 mb-lg-0 text-dark text-decoration-none">
+            <span class="fs-4">Student Management System</span>
+        </a>
+    </div>
+</header>
+
+<div class="container mt-5" style="padding-top: 20px; padding-bottom: 20px;">
+    <form class="search-form">
+        <input class="form-control" placeholder="Search" name="search">
+        <button class="btn btn-success"><i class="fa fa-search"></i> Search</button>
+    </form>
+    <br>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Student ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Department</th>
+                <th scope="col">Email</th>
+                <th scope="col">Age</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in queryset %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>
+                    <!--<a href="/see_marks/{{student.student_id}}">{{student.student_id}}</a>    ......... if we want to change the url for some reason and we have use it at many places then it will be difficult to do the changes.... so we use "name" besides url -->
+                    <a href ="{% url 'see_marks' student.student_id %}" >{{student.student_id}}</a> <!-- if we have parameters to pass then it is written like shown here -->
+                </td>
+                <td>{{ student.student_name }}</td>
+                <td>{{ student.department.department }}</td>
+                <td>{{ student.student_email }}</td>
+                <td>{{ student.student_age }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            {% if queryset.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ queryset.previous_page_number }}">Previous</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Previous</a>
+                </li>
+            {% endif %}
+
+            {% for page_num in queryset.paginator.page_range %}
+                {% if page_num == queryset.number %}
+                    <li class="page-item active">
+                        <a class="page-link" href="#">{{ page_num }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if queryset.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ queryset.next_page_number }}">Next</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<!-- Footer -->
+<!-- <footer class="py-3 mt-4 border-top">
+    <div class="container d-flex flex-wrap justify-content-center">
+        <p class="mb-0 text-center text-muted">© 2024 MonkiGang</p>
+    </div>
+</footer> -->
+
+{% endblock %}
+
